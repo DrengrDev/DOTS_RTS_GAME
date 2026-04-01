@@ -1,9 +1,11 @@
 using Unity.Entities;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class UnitMoverAuthoring : MonoBehaviour
 {
     public float moveSpeed;
+    public float rotationSpeed;
 
     public class Baker : Baker<UnitMoverAuthoring>
     {
@@ -12,7 +14,8 @@ public class UnitMoverAuthoring : MonoBehaviour
             Entity entity = GetEntity(TransformUsageFlags.Dynamic); //Creates entity that has dots transform components
             AddComponent(entity, new UnitMover //Adds component to entity, component to add is custom MoveSpeed
             {
-                moveSpeed = authoring.moveSpeed
+                moveSpeed = authoring.moveSpeed,
+                rotationSpeed = authoring.rotationSpeed,
             });
         }
     }
@@ -21,4 +24,6 @@ public class UnitMoverAuthoring : MonoBehaviour
 public struct UnitMover : IComponentData
 {
     public float moveSpeed;
+    public float rotationSpeed;
+    public float3 targetPosition;
 }
