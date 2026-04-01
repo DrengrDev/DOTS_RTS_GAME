@@ -20,14 +20,18 @@ partial struct UnitMoverSystem : ISystem
                 RefRW<PhysicsVelocity>>()) //Query everything that has these components
         {
             //Run on every single entity that has a localTransform, moveSpeed, and PhysicsVelocity component
-            float3 targetPosition = localTransform.ValueRO.Position + new float3(10, 0, 0); //float3 is essentially equivalent to Vector3
+            float3 targetPosition = MouseWorldPosition.Instance.GetPosition(); 
             float3 moveDirection = targetPosition - localTransform.ValueRO.Position;
             moveDirection = math.normalize(moveDirection);
 
-            localTransform.ValueRW.Rotation = quaternion.LookRotation(moveDirection, math.up());//Think of it as vector3.up
+            float rotationSpeed = 10f;
+            localTransform.ValueRW.Rotation = 
+            math.slerp(localTransform.ValueRO.Rotation, quaternion.LookRotation(moveDirection, math.up()), 
+            SystemAPI.Time.DeltaTime * rotationSpeed);
+
 
             physicsVelocity.ValueRW.Linear = moveDirection * moveSpeed.ValueRO.value;
-            physicsVelocity.ValueRW.Angular = float3.zero;
+            physicsVelocity.ValueRW.Angular = float3.zero; //float3 is essentially equivalent to Vector3
             //localTransform.ValueRW.Position += moveDirection * moveSpeed.ValueRO.value * SystemAPI.Time.DeltaTime;
         }
     }
