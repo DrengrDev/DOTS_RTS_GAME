@@ -12,11 +12,11 @@ partial struct UnitMoverSystem : ISystem
     {
         foreach((
             RefRW<LocalTransform> localTransform, //RW = Read/Write
-            RefRO<MoveSpeed> moveSpeed, //RO = Read Only
+            RefRO<UnitMover> unitMover, //RO = Read Only
             RefRW<PhysicsVelocity> physicsVelocity)
             in SystemAPI.Query<
                 RefRW<LocalTransform>,
-                RefRO<MoveSpeed>,
+                RefRO<UnitMover>,
                 RefRW<PhysicsVelocity>>()) //Query everything that has these components
         {
             //Run on every single entity that has a localTransform, moveSpeed, and PhysicsVelocity component
@@ -30,7 +30,7 @@ partial struct UnitMoverSystem : ISystem
             SystemAPI.Time.DeltaTime * rotationSpeed);
 
 
-            physicsVelocity.ValueRW.Linear = moveDirection * moveSpeed.ValueRO.value;
+            physicsVelocity.ValueRW.Linear = moveDirection * unitMover.ValueRO.moveSpeed;
             physicsVelocity.ValueRW.Angular = float3.zero; //float3 is essentially equivalent to Vector3
             //localTransform.ValueRW.Position += moveDirection * moveSpeed.ValueRO.value * SystemAPI.Time.DeltaTime;
         }
